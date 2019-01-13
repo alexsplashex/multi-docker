@@ -1,0 +1,36 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t lesha/react-test  -f ./client/dev.Dockerfile ./client
+   
+script: 
+  - docker run lesha/react-test npm run test -- --coverage
+
+after_success:
+  - docker build -t lesha/muilti-client ./client
+  - docker build -t lesha/muilti-nginx ./nginx
+  - docker build -t lesha/muilti-server ./server
+  - docker build -t lesha/muilti-worker ./worker
+
+# Log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u  "$DOCKER_ID" --password-stdin 
+# Push image to docker hub
+  - docker push lesha/muilti-client
+  - docker push lesha/muilti-nginx
+  - docker push lesha/muilti-server
+  - docker push lesha/muilti-worker
+
+# deploy:
+#   provider: elasticbeanstalk
+#   region: "eu-west-1"
+#   app: "docker-react"
+#   env: "DockerReact-env"
+#   bucket_name: "elasticbeanstalk-eu-west-1-185672218489" 
+#   bucket_path: "docker-react"
+#   on:
+#     branch: master
+#   access_key_id: "$AWS_ACCESS_KEY_ID"
+#   secret_access_key:
+#     secure: "$AWS_SECRET_ACCESS_KEY"
