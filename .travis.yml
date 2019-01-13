@@ -9,18 +9,18 @@ script:
   - docker run lesha/react-test npm run test -- --coverage
 
 after_success:
-  - docker build -t lesha/muilti-client ./client
-  - docker build -t lesha/muilti-nginx ./nginx
-  - docker build -t lesha/muilti-server ./server
-  - docker build -t lesha/muilti-worker ./worker
+  - docker build -t lesha/multi-client ./client
+  - docker build -t lesha/multi-nginx ./nginx
+  - docker build -t lesha/multi-server ./server
+  - docker build -t lesha/multi-worker ./worker
 
 # Log in to docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u  "$DOCKER_ID" --password-stdin 
 # Push image to docker hub
-  - docker push lesha/muilti-client
-  - docker push lesha/muilti-nginx
-  - docker push lesha/muilti-server
-  - docker push lesha/muilti-worker
+  - docker push lesha/multi-client
+  - docker push lesha/multi-nginx
+  - docker push lesha/multi-server
+  - docker push lesha/multi-worker
 
 deploy:
   provider: elasticbeanstalk
